@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import AppHeader from '@/shared/ui/AppHeader/AppHeader';
 import {
     getMyTasks,
+    getRevisionComments,
     changeTaskStatus,
 } from '@/features/tasks/api/tasks';
 import type { Task } from '@/features/tasks/types/task.types';
@@ -54,6 +55,7 @@ export default function ExecutorPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
+    const [revisionComments, setRevisionComments] = useState<Record<string, string>>({});
 
     useEffect(() => {
         let isMounted = true;
@@ -61,9 +63,15 @@ export default function ExecutorPage() {
         async function fetchTasks() {
             try {
                 const data = await getMyTasks();
+                const comments = await getRevisionComments(
+                    data
+                        .filter((task) => task.status === 'revision')
+                        .map((task) => task.id),
+                );
 
                 if (isMounted) {
                     setTasks(data);
+                    setRevisionComments(comments);
                 }
             } catch {
                 if (isMounted) {
@@ -241,6 +249,22 @@ export default function ExecutorPage() {
                                             >
                                                 {task.description}
                                             </Typography>
+                                        )}
+
+                                        {/* Замечание менеджера */}
+                                        {task.status === 'revision' && revisionComments[task.id] && (
+                                            <Alert severity="warning">
+                                                <Typography
+                                                    variant="subtitle2"
+                                                    sx={{ fontWeight: 600, mb: 0.5 }}
+                                                >
+                                                    Комментарий менеджера
+                                                </Typography>
+
+                                                <Typography variant="body2">
+                                                    {revisionComments[task.id]}
+                                                </Typography>
+                                            </Alert>
                                         )}
 
                                         <Divider />

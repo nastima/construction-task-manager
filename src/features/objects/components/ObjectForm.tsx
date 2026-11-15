@@ -34,6 +34,7 @@ export default function ObjectForm({
     const [serverError, setServerError] = useState<string | null>(null);
     const {
         register,
+        reset,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<ObjectFormValues>({
@@ -53,6 +54,11 @@ export default function ObjectForm({
             } else {
                 const newObject = await createObject(values);
                 onCreated?.(newObject);
+
+                reset({
+                    name: '',
+                    address: '',
+                });
             }
         } catch  {
             setServerError('Не удалось сохранить объект. Попробуйте ещё раз.');

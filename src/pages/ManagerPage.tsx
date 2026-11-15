@@ -353,6 +353,7 @@ export default function ManagerPage() {
                         </Typography>
 
                         <TaskForm
+                            objects={objects}
                             task={selectedTask}
                             onCreated={handleTaskCreated}
                             onUpdated={handleTaskUpdated}

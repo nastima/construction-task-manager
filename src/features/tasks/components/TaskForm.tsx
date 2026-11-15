@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { supabase } from '@/shared/api/supabase';
-import { getObjects } from '@/features/objects/api/objects';
 import {
     createTask,
     updateTask,
@@ -32,6 +31,7 @@ interface Executor {
 }
 
 interface TaskFormProps {
+    objects: ConstructionObject[];
     onCreated: (task: Task) => void;
     task?: Task | null;
     onUpdated?: (task: Task) => void;
@@ -39,12 +39,12 @@ interface TaskFormProps {
 }
 
 export default function TaskForm({
+    objects,
     onCreated,
     task = null,
     onUpdated,
     onCancel,
 }: TaskFormProps) {
-    const [objects, setObjects] = useState<ConstructionObject[]>([]);
     const [executors, setExecutors] = useState<Executor[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
@@ -68,34 +68,38 @@ export default function TaskForm({
 
     // Загружаем строительные объекты и исполнителей
     useEffect(() => {
-        const loadFormData = async () => {
+        let isMounted = true;
+        const loadExecutors = async () => {
             try {
-                setIsLoading(true);
-                setLoadError(null);
-
-                const [objectsData, executorsResponse] = await Promise.all([
-                    getObjects(),
-                    supabase
-                        .from('profiles')
-                        .select('id')
-                        .eq('role', 'executor'),
-                ]);
-
-                if (executorsResponse.error) {
-                    setLoadError('Не удалось загрузить данные формы');
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('role', 'executor');
+                if (error) {
+                    if (isMounted) {
+                        setLoadError('Не удалось загрузить исполнителей');
+                    }
                     return;
                 }
-
-                setObjects(objectsData);
-                setExecutors(executorsResponse.data ?? []);
-            } catch  {
-                setLoadError('Не удалось загрузить данные формы');
+                if (isMounted) {
+                    setExecutors(data ?? []);
+                }
+            } catch {
+                if (isMounted) {
+                    setLoadError('Не удалось загрузить исполнителей');
+                }
             } finally {
-                setIsLoading(false);
+                if (isMounted) {
+                    setIsLoading(false);
+                }
             }
         };
 
-        void loadFormData();
+        void loadExecutors();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     useEffect(() => {

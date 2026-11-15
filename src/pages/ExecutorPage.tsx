@@ -55,20 +55,32 @@ export default function ExecutorPage() {
     const [error, setError] = useState<string | null>(null);
     const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
 
-    async function loadTasks() {
-        try {
-            const data = await getMyTasks();
-            setTasks(data);
-        } catch (err) {
-            console.error(err);
-            setError('Не удалось загрузить задачи');
-        } finally {
-            setLoading(false);
-        }
-    }
-
     useEffect(() => {
-        void loadTasks();
+        let isMounted = true;
+
+        async function fetchTasks() {
+            try {
+                const data = await getMyTasks();
+
+                if (isMounted) {
+                    setTasks(data);
+                }
+            } catch {
+                if (isMounted) {
+                    setError('Не удалось загрузить задачи');
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        }
+
+        void fetchTasks();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     async function handleStatusChange(
@@ -76,7 +88,7 @@ export default function ExecutorPage() {
         newStatus: Task['status'],
     ) {
         try {
-            setUpdatingTaskId(taskId)
+            setUpdatingTaskId(taskId);
             setError(null);
             const updatedTask = await changeTaskStatus(
                 taskId,
@@ -88,8 +100,7 @@ export default function ExecutorPage() {
                 ),
             );
 
-        } catch (err) {
-            console.error(err);
+        } catch {
             setError('Не удалось изменить статус задачи');
         } finally {
             setUpdatingTaskId(null);

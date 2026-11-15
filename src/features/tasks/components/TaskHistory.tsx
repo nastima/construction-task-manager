@@ -66,8 +66,7 @@ export default function TaskHistory({ taskId }: TaskHistoryProps) {
                 const data = await getTaskHistory(taskId);
 
                 setHistory(data);
-            } catch (err) {
-                console.error(err);
+            } catch {
                 setError('Не удалось загрузить историю изменений');
             } finally {
                 setLoading(false);

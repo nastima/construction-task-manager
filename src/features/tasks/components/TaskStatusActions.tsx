@@ -99,8 +99,7 @@ export default function TaskStatusActions({
 
                 onUpdated(updatedTask);
                 reset();
-            } catch (error) {
-                console.error('Failed to change task status:', error);
+            } catch  {
                 setError('Не удалось изменить статус задачи');
             }
         })();

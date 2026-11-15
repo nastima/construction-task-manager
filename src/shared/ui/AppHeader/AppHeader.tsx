@@ -11,7 +11,7 @@ import {
 import ConstructionIcon from "@mui/icons-material/Construction";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/app/providers/useAuth";
 
 export default function AppHeader() {
     const {user, profile, signOut} = useAuth();
@@ -21,8 +21,8 @@ export default function AppHeader() {
         try {
             await signOut();
             navigate('/login', {replace: true});
-        } catch (error) {
-            console.error('Failed to sign out:', error);
+        } catch {
+            alert('Не удалось выйти из аккаунта. Попробуйте ещё раз.');
         }
     };
 

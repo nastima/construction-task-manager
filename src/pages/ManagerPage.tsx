@@ -34,27 +34,35 @@ export default function ManagerPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
+
         const loadObjects = async () => {
             try {
-                setIsLoading(true);
-                setError(null);
-
                 const [objectsData, tasksData] = await Promise.all([
                     getObjects(),
                     getTasks(),
                 ]);
 
-                setObjects(objectsData);
-                setTasks(tasksData);
-            } catch (error) {
-                console.error('Failed to load objects:', error);
-                setError('Не удалось загрузить объекты');
+                if (isMounted) {
+                    setObjects(objectsData);
+                    setTasks(tasksData);
+                }
+            } catch {
+                if (isMounted) {
+                    setError('Не удалось загрузить объекты и задачи');
+                }
             } finally {
-                setIsLoading(false);
+                if (isMounted) {
+                    setIsLoading(false);
+                }
             }
         };
 
-        loadObjects();
+        void loadObjects();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const handleObjectCreated = (newObject: ConstructionObject) => {
@@ -83,8 +91,7 @@ export default function ManagerPage() {
             if (selectedObject?.id === id) {
                 setSelectedObject(null);
             }
-        } catch (error) {
-            console.error('Failed to delete object:', error);
+        } catch {
             alert('Не удалось удалить объект');
         }
     };
@@ -118,8 +125,7 @@ export default function ManagerPage() {
             setTasks((prevTasks) =>
                 prevTasks.filter((task) => task.id !== id)
             );
-        } catch (error) {
-            console.error('Failed to delete task:', error);
+        } catch {
             alert('Не удалось удалить задачу');
         }
     };
@@ -143,7 +149,8 @@ export default function ManagerPage() {
                 component="main"
                 sx={{
                     minHeight: 'calc(100vh - 64px)',
-                    bgcolor: 'background.default',                    py: { xs: 3, md: 5 },
+                    bgcolor: 'background.default',
+                    py: { xs: 3, md: 5 },
                 }}
             >
 
@@ -191,6 +198,7 @@ export default function ManagerPage() {
                         </Typography>
 
                         <ObjectForm
+                            key={selectedObject?.id ?? 'new'}
                             object={selectedObject}
                             onCreated={handleObjectCreated}
                             onUpdated={handleObjectUpdated}

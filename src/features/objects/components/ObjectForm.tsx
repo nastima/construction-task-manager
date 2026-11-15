@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createObject, updateObject } from '@/features/objects/api/objects';
@@ -35,7 +35,6 @@ export default function ObjectForm({
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors, isSubmitting },
     } = useForm<ObjectFormValues>({
         resolver: zodResolver(objectSchema),
@@ -44,14 +43,6 @@ export default function ObjectForm({
             address: object?.address ?? '',
         },
     });
-
-    useEffect(() => {
-        reset({
-            name: object?.name ?? '',
-            address: object?.address ?? '',
-        });
-        setServerError(null);
-    }, [object, reset]);
 
     const onSubmit = async (values: ObjectFormValues) => {
         try {
@@ -63,12 +54,7 @@ export default function ObjectForm({
                 const newObject = await createObject(values);
                 onCreated?.(newObject);
             }
-            reset({
-                name: '',
-                address: '',
-            });
-        } catch (error) {
-            console.error('Failed to save object:', error);
+        } catch  {
             setServerError('Не удалось сохранить объект. Попробуйте ещё раз.');
         }
     };

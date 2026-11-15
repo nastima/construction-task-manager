@@ -87,15 +87,14 @@ export default function TaskForm({
                 }
                 setObjects(objectsData);
                 setExecutors(executorsResponse.data ?? []);
-            } catch (error) {
-                console.error('Failed to load task form data:', error);
+            } catch  {
                 setLoadError('Не удалось загрузить данные формы');
             } finally {
                 setIsLoading(false);
             }
         };
 
-        loadFormData();
+        void loadFormData();
     }, []);
 
     useEffect(() => {
@@ -149,9 +148,7 @@ export default function TaskForm({
             }
 
             reset();
-        } catch (error) {
-            console.error('Failed to save task:', error);
-
+        } catch {
             setError('root.server', {
                 message: task
                     ? 'Не удалось обновить задачу'

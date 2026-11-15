@@ -75,7 +75,6 @@ export default function TaskForm({
 
                 const [objectsData, executorsResponse] = await Promise.all([
                     getObjects(),
-
                     supabase
                         .from('profiles')
                         .select('id')
@@ -83,8 +82,10 @@ export default function TaskForm({
                 ]);
 
                 if (executorsResponse.error) {
-                    throw executorsResponse.error;
+                    setLoadError('Не удалось загрузить данные формы');
+                    return;
                 }
+
                 setObjects(objectsData);
                 setExecutors(executorsResponse.data ?? []);
             } catch  {
@@ -136,7 +137,11 @@ export default function TaskForm({
                 } = await supabase.auth.getUser();
 
                 if (userError || !user) {
-                    throw new Error('Не удалось определить пользователя');
+                    setError('root.server', {
+                        message: 'Не удалось определить пользователя',
+                    });
+
+                    return;
                 }
 
                 const newTask = await createTask({

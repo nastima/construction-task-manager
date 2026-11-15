@@ -193,6 +193,9 @@ export default function TaskForm({
                     label="Название задачи"
                     placeholder="Например, Подготовить фундамент"
                     {...register('title')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     error={!!errors.title}
                     helperText={errors.title?.message}
                     disabled={isSubmitting}
@@ -206,6 +209,9 @@ export default function TaskForm({
                     label="Описание задачи"
                     placeholder="Подробно опишите задачу..."
                     {...register('description')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     error={!!errors.description}
                     helperText={errors.description?.message}
                     disabled={isSubmitting}

@@ -1,75 +1,86 @@
-# React + TypeScript + Vite
+# Construction Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для управления строительными объектами и задачами, распределения задач между исполнителями и контроля их выполнения.
 
-Currently, two official plugins are available:
+### Демо
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Приложение: https://construction-task-manager.netlify.app
 
-## React Compiler
+### Тестовые доступы
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Для проверки приложения подготовлены тестовые аккаунты:
 
-## Expanding the ESLint configuration
+##### Менеджер №1
+Email: manager@test.local
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+##### Менеджер №2
+Email: manager2@test.local
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+##### Исполнитель №1
+Email: executor@test.local
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+##### Исполнитель №2
+Email: executor2@test.local
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Пароли для входа предоставлены в сообщении с тестовым заданием.
 
-```
+## Основные возможности
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+### Менеджер:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+* Создание и управление строительными объектами.
+* Создание задач и назначение исполнителей.
+* Просмотр всех задач и контроль их статусов.
+* Принятие задач и отправка на доработку с комментарием.
+* Просмотр истории изменений.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Исполнитель:
 
-```
+* Просмотр только назначенных ему задач.
+* Взятие задач в работу и на доработку.
+* Отправка задач на проверку.
+* Просмотр комментариев менеджера и истории изменений.
+
+### Технологический стек
+
+* React 19
+* TypeScript
+* Vite
+* React Router
+* Supabase
+* Material UI (MUI)
+* React Hook Form
+* Zod
+
+### Локальный запуск
+
+Требования: Node.js 20+, npm.
+
+Установка зависимостей:
+
+`npm install`
+
+Создать файл .env в корне проекта:
+
+`VITE_SUPABASE_URL=адрес_проекта_supabase
+VITE_SUPABASE_ANON_KEY=публичный_ключ_supabase`
+
+Запуск проекта:
+
+`npm run dev`
+
+Сборка:
+
+`npm run build`
+
+Проверка типов:
+
+`npm run typecheck`
+
+### База данных
+
+В качестве backend-сервиса используется Supabase.
+
+Миграции базы данных находятся в директории supabase/migrations.
+
+Доступ к данным разграничивается с помощью Row Level Security (RLS) и политик безопасности Supabase.

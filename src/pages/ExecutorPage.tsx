@@ -56,6 +56,13 @@ export default function ExecutorPage() {
     const [error, setError] = useState<string | null>(null);
     const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
     const [revisionComments, setRevisionComments] = useState<Record<string, string>>({});
+    const myObjects = Array.from(
+        new Map(
+            tasks
+                .filter((task) => task.objects)
+                .map((task) => [task.objects!.id, task.objects!])
+        ).values()
+    );
 
     useEffect(() => {
         let isMounted = true;
@@ -142,13 +149,6 @@ export default function ExecutorPage() {
 
                     <Divider />
 
-                    <Typography
-                        variant="h5"
-                        sx={{ fontWeight: 600 }}
-                    >
-                        Мои задачи
-                    </Typography>
-
                     {/* Загрузка */}
                     {loading && (
                         <Box sx={{ display: 'flex', justifyContent: 'center', py: 5 }}>
@@ -192,6 +192,86 @@ export default function ExecutorPage() {
                             </Typography>
                         </Box>
                     )}
+
+                    {/* Мои строительные объекты */}
+                    <Box>
+
+                        <Typography
+                            variant="h5"
+                            sx={{ fontWeight: 600, mb: 2 }}
+                        >
+                            Мои строительные объекты
+                        </Typography>
+
+                        {loading && (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                                <CircularProgress />
+                            </Box>
+                        )}
+
+                        {!loading && myObjects.length === 0 && !error && (
+                            <Alert severity="info">
+                                У вас пока нет назначенных объектов
+                            </Alert>
+                        )}
+
+                        {!loading && myObjects.length > 0 && (
+                            <Box
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: {
+                                        xs: '1fr',
+                                        sm: 'repeat(2, 1fr)',
+                                        md: 'repeat(3, 1fr)',
+                                    },
+                                    gap: 2,
+                                }}
+                            >
+
+                                {myObjects.map((object) => (
+                                    <Card
+                                        key={object.id}
+                                        elevation={0}
+                                        sx={{
+                                            borderRadius: 3,
+                                            border: '1px solid',
+                                            borderColor: 'divider',
+                                            transition: '0.2s',
+                                            '&:hover': {
+                                                boxShadow: 3,
+                                            },
+                                        }}
+                                    >
+
+                                        <CardContent>
+                                            <Typography
+                                                variant="h6"
+                                                sx={{ mb: 1, fontWeight: 600 }}
+                                            >
+                                                {object.name}
+                                            </Typography>
+
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                            >
+                                                Адрес: {object.address}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </Box>
+                        )}
+                    </Box>
+
+                    <Divider />
+
+                    <Typography
+                        variant="h5"
+                        sx={{ fontWeight: 600 }}
+                    >
+                        Мои задачи
+                    </Typography>
 
                     {/* Список задач */}
                     {!loading && tasks.map((task) => {

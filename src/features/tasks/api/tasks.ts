@@ -11,7 +11,7 @@ export type UpdateTaskData = Pick<
 export async function getTasks(): Promise<Task[]> {
     const { data, error } = await supabase
         .from('tasks')
-        .select('*, objects(name)')
+        .select('*, objects(id, name, address)')
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -36,7 +36,7 @@ export async function getMyTasks(): Promise<Task[]> {
 
     const {data, error} = await supabase
         .from('tasks')
-        .select('*, objects(name)')
+        .select('*, objects(id, name, address)')
         .eq('executor_id', user.id)
         .order('created_at', {ascending: false});
 

@@ -16,7 +16,9 @@ export interface Task {
     created_at: string;
 
     objects?: {
+        id: string;
         name: string;
+        address: string;
     } | null;
 }
 

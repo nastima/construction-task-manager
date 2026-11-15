@@ -61,3 +61,17 @@ export async function deleteObject(id: string): Promise<void> {
 
     if (error) throw error;
 }
+
+// Получение объектов, доступных текущему исполнителю
+export async function getMyObjects(): Promise<ConstructionObject[]> {
+    const { data, error } = await supabase
+        .from('objects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}

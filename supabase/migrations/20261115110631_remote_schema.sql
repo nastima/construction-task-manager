@@ -291,10 +291,10 @@ ALTER TABLE "public"."tasks"
   ADD CONSTRAINT "tasks_executor_id_fkey" FOREIGN KEY (executor_id) REFERENCES public.profiles(id) ON DELETE RESTRICT;
 
 ALTER TABLE "public"."tasks"
-  ADD CONSTRAINT "tasks_object_id_fkey" FOREIGN KEY (object_id) REFERENCES public.objects(id) ON DELETE RESTRICT;
+  ADD CONSTRAINT "tasks_object_id_fkey" FOREIGN KEY (object_id) REFERENCES public.objects(id) ON DELETE CASCADE;
 
 ALTER TABLE "public"."task_status_history"
-  ADD CONSTRAINT "task_status_history_task_id_fkey" FOREIGN KEY (task_id) REFERENCES public.tasks(id) ON DELETE RESTRICT;
+  ADD CONSTRAINT "task_status_history_task_id_fkey" FOREIGN KEY (task_id) REFERENCES public.tasks(id) ON DELETE CASCADE;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
